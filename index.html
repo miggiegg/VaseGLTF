@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<link rel="stylesheet" href="stylesheet.css">
 		<title>Custom Loader</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -34,6 +35,19 @@
     <script src="js/OrbitControls.js"></script>
     <script src="js/WebGL.js"></script>
 
+		<section id="loading-screen">
+
+			<div class="gooey">
+				<span class="dot"></span>
+				<div class="dots">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</div>
+
+		</section>
+
     <script>
 
 			if ( WEBGL.isWebGLAvailable() === false ) {
@@ -43,7 +57,7 @@
 			}
 
 			var container, controls;
-			var camera, scene, renderer ,mesh;
+			var camera, scene, renderer, object;
 
 			init();
 			animate();
@@ -53,49 +67,84 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-        // CAMERA
-
-        camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 1000 );
-				camera.position.set( - 3, 0.9, 60 ); // x, y, z
-
-
-
         // SCENE
 
 				scene = new THREE.Scene();
+
+				// LOADING
+
+				const loadingManager = new THREE.LoadingManager( () => {
+
+					const loadingScreen = document.getElementById( 'loading-screen' );
+					loadingScreen.classList.add( 'fade-out' );
+
+					// optional: remove loader from DOM via event listener
+					loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
+
+				} );
+
+				// CAMERA
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 1000 );
+				camera.position.set( - 3, 0.9, 50 ); // x, y, z
+
+				// CONTROLS
+
+				controls = new THREE.OrbitControls( camera, container );
+				controls.target.set( 0, - 0.2, - 0.2 );
+				controls.update();
 
         // LIGHTS
 
         var light = new THREE.AmbientLight(0xffffff, 2.0);
         scene.add(light);
 
-				// GLTF MODEL
+				// MODEL
 
-					var loader = new THREE.GLTFLoader();
-					loader.load( 'model/empire_vase/scene.gltf', function ( gltf ) {
+				var loader = new THREE.GLTFLoader( loadingManager );
+				loader.load( 'model/nefertitis/scene.gltf', function ( gltf ) {
 
-            mesh = gltf.scene;
-						gltf.scene.traverse( function ( child ) {
+          object = gltf.scene;
 
-            } );
-
-            var box = new THREE.Box3().setFromObject( mesh );
-            box.center( mesh.position ); // this re-sets the mesh position
-            mesh.position.multiplyScalar( - 1 );
-
-            var pivot = new THREE.Group();
-            scene.add( pivot );
-            pivot.add( mesh );
-
-            // scene.add( gltf.scene );
-
-            // The X axis is red. The Y axis is green. The Z axis is blue.
-            // var axesHelper = new THREE.AxesHelper( 100 );
-            // scene.add( axesHelper );
+					object.traverse( function ( child ) {
 
 					} );
 
-        // RENDER/BACKGROUND
+					// SCALE AND CENTER
+
+					var box = new THREE.Box3().setFromObject(object);
+					var center = box.getCenter(new THREE.Vector3());
+					var size = box.getSize(new THREE.Vector3());
+					var maxAxis = Math.max(size.x, size.y, size.z);
+
+					object.scale.multiplyScalar(15.0 / maxAxis);
+					box.setFromObject(object);
+					box.getCenter(center);
+					box.getSize(size);
+					object.position.copy(center).multiplyScalar(-1);
+					// object.position.y += (size.y * 0.125);
+
+					// SHOW OBJECT
+
+          scene.add( object );
+
+					// VISUAL HELPERS
+          // The X axis is red. The Y axis is green. The Z axis is blue.
+          var axesHelper = new THREE.AxesHelper( 100 );
+          scene.add( axesHelper );
+
+					var radius = 25;
+					var radials = 16;
+					var circles = 20;
+					var divisions = 64;
+
+					var helper = new THREE.PolarGridHelper( radius, radials, circles, divisions );
+					scene.add( helper );
+
+				} );
+
+        // BACKGROUND
+
 				renderer = new THREE.WebGLRenderer( { antialias: true }, { alpha: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -111,7 +160,6 @@
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
-
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
 			}
@@ -119,8 +167,8 @@
 
 			function animate() {
 
-        if (mesh) {
-            // mesh.rotation.y += 0.01;
+        if (object) {
+            // object.rotation.y += 0.001;
         }
 
 				requestAnimationFrame( animate );
@@ -128,9 +176,12 @@
 
 			}
 
-			controls = new THREE.OrbitControls( camera, renderer.domElement );
-			controls.target.set( 0, - 0.2, - 0.2 );
-			controls.update();
+			function onTransitionEnd( event ) {
+
+				const element = event.target;
+				element.remove();
+
+		}
 
 		</script>
 
