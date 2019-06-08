@@ -86,7 +86,7 @@
 				// CAMERA
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 1000 );
-				camera.position.set( - 3, 0.9, 50 ); // x, y, z
+				camera.position.set( - 3, 0.9, 100 ); // x, y, z
 
 				// CONTROLS
 
@@ -148,7 +148,7 @@
 				renderer = new THREE.WebGLRenderer( { antialias: true }, { alpha: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.setClearColor( 0xBB0B00, 1 ); // second param is opacity, 0 => transparent
+        renderer.setClearColor( 0xBB0B00, 0 ); // second param is opacity, 0 => transparent
 				renderer.gammaOutput = true;
 				container.appendChild( renderer.domElement );
 
