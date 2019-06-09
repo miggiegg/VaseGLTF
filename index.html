@@ -30,6 +30,14 @@
 	</head>
 
   <body>
+
+		<script type="text/javascript">
+ if (window!= window.top) { // inside iframe
+   document.body.style.backgroundColor = 'transparent';
+   // or document.body.style.background = 'none';
+ }
+</script>
+
     <script src="js/three.js"></script>
     <script src="js/GLTFLoader.js"></script>
     <script src="js/OrbitControls.js"></script>
