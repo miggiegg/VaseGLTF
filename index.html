@@ -8,7 +8,7 @@
 		<style>
 			body {
 				font-family: Monospace;
-				background-color: transparent;
+				background-color: #000;
 				color: #fff;
 				margin: 0px;
 				overflow: hidden;
@@ -30,14 +30,6 @@
 	</head>
 
   <body>
-
-		<script type="text/javascript">
- if (window!= window.top) { // inside iframe
-   document.body.style.backgroundColor = 'transparent';
-   // or document.body.style.background = 'none';
- }
-</script>
-
     <script src="js/three.js"></script>
     <script src="js/GLTFLoader.js"></script>
     <script src="js/OrbitControls.js"></script>
@@ -156,7 +148,7 @@
 				renderer = new THREE.WebGLRenderer( { antialias: true }, { alpha: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.setClearColor( 0xffffff, 0 ); // second param is opacity, 0 => transparent
+        renderer.setClearColor( 0xffffff, 1 ); // second param is opacity, 0 => transparent
 				renderer.gammaOutput = true;
 				container.appendChild( renderer.domElement );
 
