@@ -8,7 +8,7 @@
 		<style>
 			body {
 				font-family: Monospace;
-				background-color: #000;
+				background-color: transparent;
 				color: #fff;
 				margin: 0px;
 				overflow: hidden;
@@ -148,7 +148,7 @@
 				renderer = new THREE.WebGLRenderer( { antialias: true }, { alpha: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.setClearColor( 0xffffff, 0.5 ); // second param is opacity, 0 => transparent
+        renderer.setClearColor( 0xffffff, 0 ); // second param is opacity, 0 => transparent
 				renderer.gammaOutput = true;
 				container.appendChild( renderer.domElement );
 
