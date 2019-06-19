@@ -1,3 +1,9 @@
+body {
+	margin: 0px;
+	overflow: hidden;
+	background-color: none transparent;
+}
+
 #loading-screen {
 	position: absolute;
 	z-index: 2;
